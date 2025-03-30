@@ -1,0 +1,55 @@
+import pygame
+from src.menu import MainMenu
+from src.settings import Settings
+from src.game import Game
+from src.constants import *
+
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Saper")
+    clock = pygame.time.Clock()
+    
+    current_screen = "menu"
+    menu = MainMenu()
+    settings = Settings()
+    game = Game()
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            
+            if current_screen == "menu":
+                action = menu.handle_event(event)
+                if action == "start":
+                    current_screen = "game"
+                elif action == "settings":
+                    current_screen = "settings"
+                elif action == "exit":
+                    running = False
+            
+            elif current_screen == "settings":
+                action = settings.handle_event(event)
+                if action == "back":
+                    current_screen = "menu"
+            
+            elif current_screen == "game":
+                if game.handle_event(event) == "back":
+                    current_screen = "menu"
+        
+        screen.fill(BG_COLOR)
+        
+        if current_screen == "menu":
+            menu.draw(screen)
+        elif current_screen == "settings":
+            settings.draw(screen)
+        elif current_screen == "game":
+            game.draw(screen)
+        
+        pygame.display.flip()
+        clock.tick(60)
+
+if __name__ == "__main__":
+    main()
